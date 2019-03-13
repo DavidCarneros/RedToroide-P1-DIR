@@ -14,13 +14,14 @@
  *                    a los procesos. Tambien enviara el proceso con rank==0 si se 
  *                    debe continuar o no con la ejecución.
  *                    Despues todos realizaran el siguiente algoritmo:
- *                      Desde 1 a L (L-1) 
+ *                      Desde 1 a L :
  *                         enviar(SUR,MiNumero)
  *                         recibir(NORTE,suNumero)
  *                         MiNumero = min(MiNumero,SuNumero)
- *                      enviar(ESTE,MiNumero)
- *                      recibir(OESTE,suNumero)
- *                      MiNumero = min(MiNumero,SuNumero)
+ *                      Desde 1 a L :
+ *                         enviar(ESTE,MiNumero)
+ *                         recibir(OESTE,suNumero)
+ *                         MiNumero = min(MiNumero,SuNumero)
  * 
  *                      El algoritmo tendrá una complejidad O(raiz(n)) o lo 
  *                      que es lo mismo O(L)
@@ -39,7 +40,7 @@
 #define TRUE   1
 #define FALSE  0
 
-#define L     4
+#define L     5
 #define NORTE 0
 #define SUR   1
 #define ESTE  2
@@ -200,13 +201,14 @@ int* vecinosToroide(int node){
 
 /*
 Función que implementa el algoritmo:
-       Desde 1 a L (L-1) 
+       Desde 1 a L:
           enviar(SUR,MiNumero)
           recibir(NORTE,suNumero)
           MiNumero = min(MiNumero,SuNumero)
-       enviar(ESTE,MiNumero)
-       recibir(OESTE,suNumero
-       MiNumero = min(MiNumero,SuNumero)
+       Desde 1 a L:
+           enviar(ESTE,MiNumero)
+           recibir(OESTE,suNumero
+           MiNumero = min(MiNumero,SuNumero)
 
 Solo el nodo con rank==0 imprimirá el resultado.
 El algoritmo tendrá una complejidad O(raiz(n)) o lo que es lo mismo O(L)
@@ -224,10 +226,12 @@ void calcularMinimo(int rank, double numero){
         numero = minimo(numero,suNumero);
     }
 
+    for(i=1;i<=L;i++){
+        MPI_Send(&numero,1,MPI_DOUBLE,vecinos[ESTE],1,MPI_COMM_WORLD);
+        MPI_Recv(&suNumero,1,MPI_DOUBLE,vecinos[OESTE],1,MPI_COMM_WORLD,&status);
+        numero = minimo(numero,suNumero); 
+    }
 
-    MPI_Send(&numero,1,MPI_DOUBLE,vecinos[ESTE],1,MPI_COMM_WORLD);
-    MPI_Recv(&suNumero,1,MPI_DOUBLE,vecinos[OESTE],1,MPI_COMM_WORLD,&status);
-    numero = minimo(numero,suNumero); 
     
 
     if(rank==0){

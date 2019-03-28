@@ -40,7 +40,7 @@
 #define TRUE   1
 #define FALSE  0
 
-#define L     5
+#define L     4
 #define NORTE 0
 #define SUR   1
 #define ESTE  2
@@ -87,7 +87,7 @@ int main(int argc, char* argv[]){
         if(continuar){
             for(i=0;i<(L*L);i++){
                 buffNumero = datos[i];
-                MPI_Send(&buffNumero,1,MPI_DOUBLE,i,1,MPI_COMM_WORLD);
+                MPI_Bsend(&buffNumero,1,MPI_DOUBLE,i,1,MPI_COMM_WORLD);
             }
             /* Liberamos el array puesto que no lo vamos a usar ya*/
             free(datos);
@@ -220,14 +220,14 @@ void calcularMinimo(int rank, double numero){
     vecinos = vecinosToroide(rank);
     double suNumero;
 
-    for(i=1;i<=L;i++){
-        MPI_Send(&numero,1,MPI_DOUBLE,vecinos[SUR],1,MPI_COMM_WORLD);
+    for(i=1;i<L;i++){
+        MPI_Bsend(&numero,1,MPI_DOUBLE,vecinos[SUR],1,MPI_COMM_WORLD);
         MPI_Recv(&suNumero,1,MPI_DOUBLE,vecinos[NORTE],1,MPI_COMM_WORLD,&status);
         numero = minimo(numero,suNumero);
     }
 
-    for(i=1;i<=L;i++){
-        MPI_Send(&numero,1,MPI_DOUBLE,vecinos[ESTE],1,MPI_COMM_WORLD);
+    for(i=1;i<L;i++){
+        MPI_Bsend(&numero,1,MPI_DOUBLE,vecinos[ESTE],1,MPI_COMM_WORLD);
         MPI_Recv(&suNumero,1,MPI_DOUBLE,vecinos[OESTE],1,MPI_COMM_WORLD,&status);
         numero = minimo(numero,suNumero); 
     }

@@ -41,6 +41,7 @@
 #define FALSE  0
 
 #define L     4
+
 #define NORTE 0
 #define SUR   1
 #define ESTE  2
@@ -72,12 +73,12 @@ int main(int argc, char* argv[]){
         obtenerDatos(datos,&continuar,&cantidadNumeros);
         /* Si el numero de datos no es igual al numero de nodos no podra ejecutarse */
         if(cantidadNumeros!=(L*L)){
-            fprintf(stderr,"Error con el numero de datos\n");
+            fprintf(stderr,"Error con el número de datos\n");
             continuar=FALSE;
         }
         /* Si la cantidad de nodos no es la misma que L*L no podra ejecutarse*/
         if(size!=(L*L)){
-            fprintf(stderr,"Error con el numero de nodos\n");
+            fprintf(stderr,"Error con el número de nodos\n");
             continuar=FALSE;
         }
         /* Multidifusion para saber si continuar con la ejecucion o no*/
@@ -89,7 +90,7 @@ int main(int argc, char* argv[]){
                 buffNumero = datos[i];
                 MPI_Bsend(&buffNumero,1,MPI_DOUBLE,i,1,MPI_COMM_WORLD);
             }
-            /* Liberamos el array puesto que no lo vamos a usar ya*/
+            /* Liberamos el array de datos puesto que no lo vamos a usar ya*/
             free(datos);
         }
 
@@ -115,30 +116,25 @@ la cantidad de numeros.
 void obtenerDatos(double* datos,int *continuar,int *cantidadNumeros){
     char *linea;
     char *token;
-    
     FILE *file;
-
     linea = malloc(MAX_ITEMS*sizeof(char));
-
+    /* Si no se puede leer el fichero mostramos el error y no podra continuar */
     if((file = fopen(FILENAME,"r"))==NULL){
         fprintf(stderr,"Error al abrir el archivo %s\n",FILENAME);
         continuar = FALSE;
-
     } 
     else{
+        /*Hacemos uso de la funcion strtok para leer la cadena separada por comas*/
         fgets(linea,MAX_ITEMS*sizeof(char),file);
         token = strtok(linea,",");
-        
         while(token!=NULL){
+            /* vamos metiendo el dato en el array e incrementando el puntero que hara de indice*/
             datos[(*cantidadNumeros)++]=atof(token);
             token = strtok(NULL,",");
-        }
-        
-        
+        }  
     }
     fclose(file);
     free(linea);
-
 }
 /*
 Funcion para obtener los vecinos que tiene un nodo dado su rank.
@@ -219,7 +215,7 @@ void calcularMinimo(int rank, double numero){
     MPI_Status status;
     vecinos = vecinosToroide(rank);
     double suNumero;
-
+    
     for(i=1;i<L;i++){
         MPI_Bsend(&numero,1,MPI_DOUBLE,vecinos[SUR],1,MPI_COMM_WORLD);
         MPI_Recv(&suNumero,1,MPI_DOUBLE,vecinos[NORTE],1,MPI_COMM_WORLD,&status);
@@ -235,7 +231,7 @@ void calcularMinimo(int rank, double numero){
     
 
     if(rank==0){
-        printf("El numero minimo es: %.2f\n",numero);
+        printf("El número minimo es: %f\n",numero);
     }
 
 }

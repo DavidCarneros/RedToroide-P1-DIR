@@ -4,11 +4,12 @@ mcc  := mpicc
 cc := gcc
 
 
+all: 
+	$(cc) DataGenerator.c -o DataGenerator
+	$(mcc) RedToroide.c -o RedToroide
 
 generateData16:
-	$(cc) DataGenerator.c -o DataGenerator
 	./DataGenerator 16
 
-toroide_L4:
-	$(mcc) RedToroide.c -o RedToroide
+toroide_16:
 	$(run) -n 16 ./RedToroide

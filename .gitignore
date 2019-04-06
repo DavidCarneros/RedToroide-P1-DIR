@@ -1,6 +1,8 @@
 .*
 *.dat
-*.pdf
+*.txt
+*.docx
+
 # Prerequisites
 *.d
 
